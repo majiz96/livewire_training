@@ -1,0 +1,34 @@
+**add pagination >> done**
+
+
+
+**add bootstrap and configurate styles and scripts ~**
+
+
+
+**make categories ~**
+
+
+
+add size column
+
+
+
+seperate delete and update column
+
+
+
+add picture column
+
+
+
+add modal editing
+
+
+
+add discount
+
+
+
+fix responsive form
+
