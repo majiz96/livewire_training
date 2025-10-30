@@ -202,10 +202,20 @@
         <div class="naviga mx-auto">
             <a wire:navigate class="nav-item mx-3 my-2" href="/">صفحه اصلی</a>
             @auth()
-            <a wire:navigate class="nav-item mx-3 my-2" href="/test">تست </a>
-            <a wire:navigate class="nav-item mx-3 my-2" href="/categories">مدیریت دسته ها</a>
-            <a wire:navigate class="nav-item mx-3 my-2" href="/foods">مدیریت غذاها</a>
-            <a wire:navigate class="nav-item mx-3 my-2" href="/positions">جایگاه ها</a>
+                <a wire:navigate class="nav-item mx-3 my-2" href="/test">تست </a>
+                @can('admin-access')
+
+                    @can('operation-access')
+                    <a wire:navigate class="nav-item mx-3 my-2" href="/categories">مدیریت دسته ها</a>
+                    @endcan
+
+                    <a wire:navigate class="nav-item mx-3 my-2" href="/foods">مدیریت غذاها</a>
+
+                    @can('full-access')
+                    <a wire:navigate class="nav-item mx-3 my-2" href="/positions">جایگاه ها</a>
+                    @endcan
+
+                @endcan
             @endauth
             <a wire:navigate class="nav-item mx-3 my-2" href="/users">کاربری</a>
         </div>

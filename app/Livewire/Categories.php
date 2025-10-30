@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Food;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
+use App\Models\Food;
 use App\Models\Category;
 
 class Categories extends Component
@@ -45,6 +46,9 @@ class Categories extends Component
 
     public function delete($id)
     {
+        if(Gate::denies('full-access')){
+            abort(403,'شما مجاز به حذف دسته ها نیستید.');
+        }
         Category::find($id)->delete();
     }
 

@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 //use phpDocumentor\Reflection\Types\Integer;
 use App\Models\User;
@@ -38,7 +39,7 @@ class Users extends Component
 
     #[Validate("required",message : "جایگاه کاربر الزامی است")]
     #[Validate("integer",message : "نوع داده اشتباه است")]
-    public Int $position_id;
+    public Int $position_id = 4;
 
     public $logmail;
 
@@ -60,6 +61,10 @@ class Users extends Component
 
     public function edit($id)
     {
+        if (Gate::denies('full-access')) {
+            abort(403,'برای ویرایش کاربران به دسترسی کامل نیاز دارید');
+        }
+
         $user = User::findOrFail($id);
         $this->editing = $id;
         $this->name = $user->name;
@@ -88,6 +93,12 @@ class Users extends Component
         $this->validate();
         $data = $this->pull();
         $user = User::create($data);
+
+        if(empty(Auth::user()))
+        {
+            Auth::login($user);
+        }
+
     }
     $this->reset();
 
@@ -120,6 +131,10 @@ class Users extends Component
 
     public function delete($id)
     {
+        if (Gate::denies('full-access')) {
+            abort(403,'برای حذف کاربران به دسترسی کامل نیاز دارید');
+        }
+
     $user=User::findOrFail($id);
     $user->delete();
     }

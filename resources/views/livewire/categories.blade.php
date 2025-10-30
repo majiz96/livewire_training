@@ -36,8 +36,13 @@
                 <div class="row">
 
                     <div class="catName col-6 my-auto"> {{$cat->name}} </div>
-                    <div class="col-3"> <button class="btn btn-link w-auto text-danger cdel" wire:click="delete({{$cat->id}})"
-                    wire:confirm="آیا از حذف دسته ( {{$cat->name}} ) مطمئن هستید؟">حذف</button> </div>
+                    <div class="col-3">
+
+                    @can('full-access')
+                    <button class="btn btn-link w-auto text-danger cdel" wire:click="delete({{$cat->id}})"
+                    wire:confirm="آیا از حذف دسته ( {{$cat->name}} ) مطمئن هستید؟">حذف</button>
+                    @endcan
+                    </div>
 
                     <div class="col-3"> <button class="btn btn-link w-auto text-info cupd" wire:click="edit({{$cat->id}})">ویرایش</button> </div>
                 </div>

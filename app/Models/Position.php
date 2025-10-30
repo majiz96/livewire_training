@@ -8,4 +8,9 @@ class Position extends Model
 {
     protected $table = 'positions';
     protected $fillable = ['title','description','access'];
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
 }

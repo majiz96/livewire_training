@@ -6,7 +6,7 @@
     </h1>
 
 
-
+    @can('edit-access')
     <form class="form-control bg-secondary w-auto text-light my-2" wire:submit="save">
 
         <div class="row mx-auto">
@@ -70,8 +70,16 @@
 
             </div>
 
+            @can('operation-access')
             <button type="submit" class="btn btn-sm btn-primary h-25 mx-auto"> {{$editing ? 'ویرایش' : 'افزودن'}} </button>
-
+            @endcan
+            @cannot('operation-access')
+                @if($editing)
+                    <button type="submit" class="btn btn-sm btn-primary h-25 mx-auto"> ویرایش </button>
+                @else
+                    <button type="submit" class="btn btn-sm btn-dark disabled h-25 mx-auto" disabled> ویرایش </button>
+                @endif
+            @endcannot
         </div>
 
 
@@ -82,7 +90,7 @@
         @endif
 
     </form>
-
+    @endcan
 
 
 
@@ -155,7 +163,10 @@
                     </th>
 
                     <th>قیمت نهایی</th>
+                    @can('edit-access')
                     <th>تغییر</th>
+                    @endcan
+
                 </tr>
 
                 </thead>
@@ -207,12 +218,14 @@
                             @endif
                         </td>
 
+                        @can('edit-access')
                         <td class="my-auto">
                             <div class="btn-group my-auto">
                                 <button class="btn btn-sm w-auto del my-auto" wire:click="question({{$food->id}})">حذف</button>
                                 <button class="btn btn-sm w-auto upd my-auto" wire:click="edit({{$food->id}})">ویرایش</button>
                             </div>
                         </td>
+                        @endcan
 
                     </tr>
                     @include('modal')

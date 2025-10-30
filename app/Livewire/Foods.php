@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Gate;
+
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Livewire\WithFileUploads;
@@ -52,6 +54,10 @@ class Foods extends Component
 
     public function edit($id)
     {
+        if(Gate::denies('edit-access'))
+        {
+            abort(403,'برای ویرایش محصول به دسترسی مدیریت نیاز است');
+        }
 
         $food = Food::findOrFail($id);
         $this->editing = $food->id;
@@ -97,9 +103,12 @@ class Foods extends Component
 
             $this->reset(['name', 'description', 'price', 'image']);
 
-
-
         } else {
+
+            if(Gate::denies('operation-access'))
+            {
+                abort(403,'برای افزودن محصول جدید به دسترسی مدیریت سطح بالاتر نیاز دارید');
+            }
 
             $data = $this->pull(['cat_id', 'name', 'description', 'price']);
             $data['image'] = $imagePath;
@@ -136,6 +145,10 @@ class Foods extends Component
 
     public function question($id)
     {
+        if(Gate::denies('edit-access'))
+        {
+        abort(403,'برای حذف محصول به دسترسی مدیریتی نیاز دارید.');
+        }
         $food = Food::findOrFail($id);
 
         $this->modalName = $food->name;

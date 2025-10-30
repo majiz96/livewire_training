@@ -38,6 +38,7 @@
 
                 <div class="userform col-4 mx-auto text-center">
 
+                    @can('full-access')
                     <select class="btn btn-outline-secondary w-auto bg-dark" wire:model.blur="position_id">
                         @if($positions->isNotEmpty())
                             <option value=""> انتخاب جایگاه </option>
@@ -50,6 +51,7 @@
 
                         @endif
                     </select>
+                    @endcan
 
                     <div class="errmess">@error('position_id') {{$message}} @enderror</div>
                 </div>
@@ -82,6 +84,7 @@
 
         <!-- -----------------------------------------------------Show users------------------------------------------------- -->
     @auth()
+        @can('operation-access')
         @if($users->isNotEmpty())
 
             <div class="row text-center mx-auto my-5 w-50 align-content-center">
@@ -110,13 +113,17 @@
                         </div>
 
                         <div class="col-1"></div>
-
+                        @can('full-access')
                         <div class="col-2 btn-group">
                             <button class="btn btn-sm w-auto del my-auto" wire:click="delete({{$user->id}})"
                             wire:confirm=" آیا از حذف ({{$user->name}}) مطمئن هستید؟">حذف</button>
 
                             <button class="btn btn-sm w-auto upd my-auto" wire:click="edit({{$user->id}})">ویرایش</button>
                         </div>
+                        @endcan
+                        @cannot('full-access')
+                            <h5 class="col-2 text-warning"> فاقد مجوز تغییر </h5>
+                        @endcannot
                     </div>
                     @endforeach
 
@@ -129,6 +136,7 @@
         @endif
 
     @endif
+    @endcan
 
     @endauth
     <!--  ----------------------------------------------Login Form----------------------------------------------  -->
