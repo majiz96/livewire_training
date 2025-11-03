@@ -23,10 +23,12 @@ class Users extends Component
     #[Validate("required",message : "نام کاربری الزامی است")]
     #[Validate("min:3",message: "نام کاربری باید حداقل ۳ کلمه باشد")]
     #[Validate("string",message: "ساختار متنی نام کاربری معتبر نیست")]
+    #[Validate("unique:users,name", message: "این نام کاربری قبلا استفاده شده است")]
     public string $name;
 
     #[Validate("required",message : "ایمیل الزامی است")]
     #[Validate("email:rfc,dns",message: "ایمیل معتبر نیست")]
+    #[Validate("unique:users,email", message: "این ایمیل قبلا استفاده شده است")]
     public string $email;
 
     #[Validate("required",message : "رمز عبور الزامی است")]
@@ -82,6 +84,9 @@ class Users extends Component
     public function save()
     {
 
+        $this->showSignup = true;
+        $this->showLogin = false;
+
     if ($this->editing) {
         $this->validate();
         $data = $this->pull();
@@ -97,6 +102,7 @@ class Users extends Component
         if(empty(Auth::user()))
         {
             Auth::login($user);
+            return redirect()->intended('/');
         }
 
     }

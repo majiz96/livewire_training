@@ -15,7 +15,7 @@ use App\Livewire\Users;
 });*/
 
 
-Route::get('/', Dashboard::class);
+Route::get('/', Dashboard::class)->middleware('checkLogin');
 Route::get('/test', Test::class);
 Route::get('/categories', Categories::class);
 Route::get('/positions', Positions::class);
