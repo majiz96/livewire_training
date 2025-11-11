@@ -47,6 +47,8 @@ class Users extends Component
 
     public $passlog;
 
+    public $remember;
+
     public $editing = null;
 
 
@@ -124,7 +126,7 @@ class Users extends Component
         $this->showLogin = false;
         $this->showSignup = true;
 
-        if (Auth::attempt(['email' => $this->logmail, 'password' => $this->passlog])) {
+        if (Auth::attempt(['email' => $this->logmail, 'password' => $this->passlog],$this->remember)) {
             session()->flash('message', 'ورود موفقیت‌آمیز بود!');
             session()->regenerate();
             return redirect()->intended('/');
