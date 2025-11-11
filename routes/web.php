@@ -10,12 +10,12 @@ use App\Livewire\Users;
 
 
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
+Route::get('/login', function () {
+    return redirect('/users');
+})->name('login');
 
 
-Route::get('/', Dashboard::class)->middleware('checkLogin');
+Route::get('/', Dashboard::class)->middleware('auth');
 Route::get('/test', Test::class);
 Route::get('/categories', Categories::class);
 Route::get('/positions', Positions::class);
