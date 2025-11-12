@@ -160,7 +160,14 @@
                     <label for="passlog">رمز عبور:</label>
                     <input class="mx-auto" type="text" id="passlog" wire:model.blur="passlog" autocomplete="off">
                     <div class="errmess">@error('passlog') {{$message}} @enderror</div>
-                </div class="errmess">
+                </div>
+
+                <div class="userform row mx-auto text-center">
+                    <div class="col-3"></div>
+                    <label class="col-3 mx-auto" for="remember">فراموشم نکن</label>
+                    <input class="col-1 my-2" type="checkbox" id="remember" wire:model.blur="remember">
+                    <div class="col-3"></div>
+                </div>
 
                 <div class="userform col-8 mx-auto text-center">
                     <button type="submit" class="btn btn-sm btn-primary w-25 mx-3">ورود</button>

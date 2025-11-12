@@ -15,11 +15,18 @@ Route::get('/login', function () {
 })->name('login');
 
 
-Route::get('/', Dashboard::class)->middleware('auth');
-Route::get('/test', Test::class);
-Route::get('/categories', Categories::class);
-Route::get('/positions', Positions::class);
-Route::get('/foods', Foods::class);
+//Route::get('/', Dashboard::class)->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/', Dashboard::class);
+    Route::get('/test', Test::class);
+    Route::get('/categories', Categories::class);
+    Route::get('/positions', Positions::class);
+    Route::get('/foods', Foods::class);
+
+});
+
 Route::get('/users', Users::class);
 
 
