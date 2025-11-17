@@ -17,8 +17,8 @@ class Users extends Component
 {
     public $pageTitle = "صفحه ورود و ثبت نام کاربران";
     public $empUser = "کاربری ثبت نام نکرده است";
-    public $showSignup = false;
-    public $showLogin = true;
+    public $showSignup = true;
+    public $showLogin = false;
 
     #[Validate("required",message : "نام کاربری الزامی است")]
     #[Validate("min:3",message: "نام کاربری باید حداقل ۳ کلمه باشد")]
@@ -41,7 +41,7 @@ class Users extends Component
 
     #[Validate("required",message : "جایگاه کاربر الزامی است")]
     #[Validate("integer",message : "نوع داده اشتباه است")]
-    public Int $position_id = 4;
+    public Int $position_id = 6;
 
     public $logmail;
 
@@ -104,7 +104,10 @@ class Users extends Component
         if(empty(Auth::user()))
         {
             Auth::login($user);
-            return redirect()->intended('/');
+            //return redirect()->intended('/');
+            $user->sendEmailVerificationNotification();
+            return redirect(route('verification.notice'));
+
         }
 
     }
@@ -127,6 +130,12 @@ class Users extends Component
         $this->showSignup = true;
 
         if (Auth::attempt(['email' => $this->logmail, 'password' => $this->passlog],$this->remember)) {
+
+            $user = Auth::user();
+            if (!$user->hasVerifiedEmail()) {
+                return redirect(route('verification.notice'));
+            }
+
             session()->flash('message', 'ورود موفقیت‌آمیز بود!');
             session()->regenerate();
             return redirect()->intended('/');
