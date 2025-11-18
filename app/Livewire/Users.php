@@ -2,19 +2,22 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Validate;
+
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-
+use Livewire\Component;
+use Livewire\Attributes\Validate;
+use Livewire\WithPagination;
 //use phpDocumentor\Reflection\Types\Integer;
 use App\Models\User;
 use App\Models\Position;
+use phpDocumentor\Reflection\Types\Boolean;
 use PhpParser\Node\Scalar\Int_;
 
 class Users extends Component
 {
+    use WithPagination;
     public $pageTitle = "صفحه ورود و ثبت نام کاربران";
     public $empUser = "کاربری ثبت نام نکرده است";
     public $showSignup = true;
@@ -50,6 +53,9 @@ class Users extends Component
     public $remember;
 
     public $editing = null;
+
+    public $selected = [];
+
 
 
     public function showLoginForm()
@@ -155,6 +161,15 @@ class Users extends Component
     $user=User::findOrFail($id);
     $user->delete();
     }
+
+   public function deleteSelected()
+   {
+       if (Gate::denies('full-access'))
+       {
+       abort(403,'برای حذف کاربران به دسترسی کامل نیاز دارید');
+       }
+       User::whereIn('id',$this->selected)->delete();
+   }
 
     public function render()
     {

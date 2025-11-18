@@ -90,19 +90,36 @@
             <div class="row text-center mx-auto my-5 w-50 align-content-center">
 
                 <div class="row px-2 py-3 mx-auto">
+
+                    @can('full-access')
+                    <div class="col-1">
+                        @if(!empty($selected))
+                        <button class="btn btn-sm btn-danger w-auto" wire:click="deleteSelected"
+                                wire:confirm=" آیا از حذف کاربران انتخاب شده مطمئن هستید؟"> حذف </button>
+                        @else
+                            <button class="del btn btn-sm btn-danger w-auto" wire:click="deleteAll"
+                                    wire:confirm=" آیا از حذف همه کاربران مطمئن هستید؟"> حذف همه </button>
+                        @endif
+                    </div>
+                    @endcan
+
+                    <div class="col-1">ردیف</div>
                     <div class="col-2">نام کاربری</div>
-                    <div class="col-4">ایمیل</div>
-                    <div class="col-3">جایگاه</div>
-                    <div class="col-2"></div>
+                    <div class="col-3">ایمیل</div>
+                    <div class="col-2">جایگاه</div>
+
                 </div>
 
 
                     @foreach($users as $user)
                     <div class="row bg-black rounded px-2 py-3 mx-auto my-2">
-                        <div class="col-2">{{$user->name}}</div>
-                        <div class="col-4">{{$user->email}}</div>
 
-                        <div class="col-3">
+                       @can('full-access') <div class="col-1"> <input type="checkbox" wire:model.live="selected" value="{{$user->id}}"> </div>@endcan
+                        <div class="col-1">{{ $loop->iteration }}</div>
+                        <div class="col-2">{{$user->name}}</div>
+                        <div class="col-3">{{$user->email}}</div>
+
+                        <div class="col-2">
 
                             @foreach($positions as $pos)
                                 @if($pos->id == $user->position_id)
@@ -116,7 +133,7 @@
                         @can('full-access')
                         <div class="col-2 btn-group">
                             <button class="btn btn-sm w-auto del my-auto" wire:click="delete({{$user->id}})"
-                            wire:confirm=" آیا از حذف ({{$user->name}}) مطمئن هستید؟">حذف</button>
+                                    wire:confirm=" آیا از حذف ({{$user->name}}) مطمئن هستید؟">حذف</button>
 
                             <button class="btn btn-sm w-auto upd my-auto" wire:click="edit({{$user->id}})">ویرایش</button>
                         </div>
