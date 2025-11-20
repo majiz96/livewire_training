@@ -6,6 +6,8 @@ namespace App\Livewire;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
+
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
@@ -29,10 +31,19 @@ class Users extends Component
     #[Validate("unique:users,name", message: "این نام کاربری قبلا استفاده شده است")]
     public string $name;
 
+    #[Validate("required",message : "نام کاربری الزامی است")]
+    #[Validate("min:3",message: "نام کاربری باید حداقل ۳ کلمه باشد")]
+    #[Validate("string",message: "ساختار متنی نام کاربری معتبر نیست")]
+    public string $u_name;
+
     #[Validate("required",message : "ایمیل الزامی است")]
     #[Validate("email:rfc,dns",message: "ایمیل معتبر نیست")]
     #[Validate("unique:users,email", message: "این ایمیل قبلا استفاده شده است")]
     public string $email;
+
+    #[Validate("required",message : "ایمیل الزامی است")]
+    #[Validate("email:rfc,dns",message: "ایمیل معتبر نیست")]
+    public string $u_email;
 
     #[Validate("required",message : "رمز عبور الزامی است")]
     #[Validate("min:8",message: "حداقل باید ۸ حرف باشد")]
@@ -56,7 +67,7 @@ class Users extends Component
 
     public $selected = [];
 
-
+    public $selectAll = false;
 
     public function showLoginForm()
     {
@@ -96,8 +107,15 @@ class Users extends Component
         $this->showLogin = false;
 
     if ($this->editing) {
-        $this->validate();
-        $data = $this->pull();
+
+        $this->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'position_id' => 'required|integer',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $data = $this->pull(['name', 'email', 'position_id', 'password', 'password_confirmation']);
         $user = User::find($this->editing)->update($data);
         $this->editing = null;
     }
@@ -113,7 +131,6 @@ class Users extends Component
             //return redirect()->intended('/');
             $user->sendEmailVerificationNotification();
             return redirect(route('verification.notice'));
-
         }
 
     }
@@ -170,7 +187,22 @@ class Users extends Component
        }
        User::whereIn('id',$this->selected)->delete();
    }
+   public function updatedSelectAll($value)
+   {
+       if($value)
+       {
+           $maxAccess = Position::max('access');
 
+           $this->selected = User::join('positions', 'users.position_id', '=', 'positions.id')
+               ->where('positions.access', '<', $maxAccess)
+               ->pluck('users.id')
+               ->toArray();
+       }
+       else
+       {
+           $this->selected = [];
+       }
+   }
     public function render()
     {
         return view('livewire.users',['users'=>User::all(),'positions'=>Position::orderBy('access','asc')->get()]);

@@ -24,17 +24,21 @@
 
             <div class="row">
 
-                <div class="userform col-4 mx-auto text-center py-1">
-                    <label for="name">نام کاربری:</label>
-                    <input class="mx-auto" type="text" id="name" wire:model.blur="name" autocomplete="off">
-                    <div class="errmess">@error('name') {{$message}} @enderror</div>
-                </div>
 
-                <div class="userform col-4 mx-auto text-center py-1">
-                    <label for="email">ایمیل:</label>
-                    <input class="mx-auto" type="text" id="email" wire:model.blur="email" autocomplete="off">
-                    <div class="errmess">@error('email') {{$message}} @enderror</div>
-                </div>
+                    <div class="userform col-4 mx-auto text-center py-1">
+                        <label for="name">نام کاربری:</label>
+                        <input class="mx-auto" type="text" id="name" wire:model.blur="name" autocomplete="off">
+                        <div class="errmess">@error('name') {{$message}} @enderror</div>
+                    </div>
+
+                    <div class="userform col-4 mx-auto text-center py-1">
+                        <label for="email">ایمیل:</label>
+                        <input class="mx-auto" type="text" id="email" wire:model.blur="email" autocomplete="off">
+                        <div class="errmess">@error('email') {{$message}} @enderror</div>
+                    </div>
+
+
+
 
                 <div class="userform col-4 mx-auto text-center">
 
@@ -71,7 +75,7 @@
                 <div class="userform col-4 mx-auto text-center py-1">
 
                     @if($editing)
-                        <button type="submit" class="btn btn-sm btn-success w-auto mx-3">ثبت نام</button>
+                        <button type="submit" class="upd btn btn-sm w-auto mx-3"> ویرایش </button>
                         <button type="button" class="btn btn-sm btn-warning w-auto mx-3" wire:click="cancel">انصراف</button>
                     @else
                         <button type="submit" class="btn btn-sm btn-success w-50 mx-3">ثبت نام</button>
@@ -93,12 +97,14 @@
 
                     @can('full-access')
                     <div class="col-1">
-                        @if(!empty($selected))
-                        <button class="btn btn-sm btn-danger w-auto" wire:click="deleteSelected"
-                                wire:confirm=" آیا از حذف کاربران انتخاب شده مطمئن هستید؟"> حذف </button>
+                        @if(count($selected) > 1)
+                            <button class="del btn btn-sm btn-danger w-auto" wire:click="deleteSelected"
+                                wire:confirm=" آیا از حذف کاربران انتخاب شده مطمئن هستید؟ "> حذف </button>
+
+                            <input type="checkbox" wire:model.live="selectAll">
                         @else
-                            <button class="del btn btn-sm btn-danger w-auto" wire:click="deleteAll"
-                                    wire:confirm=" آیا از حذف همه کاربران مطمئن هستید؟"> حذف همه </button>
+                          <!--  <button class="upd btn btn-sm btn-danger w-auto" wire:click="deleteAll"> انتخاب همه </button> -->
+                            <input type="checkbox" wire:model.live="selectAll">
                         @endif
                     </div>
                     @endcan
@@ -114,7 +120,20 @@
                     @foreach($users as $user)
                     <div class="row bg-black rounded px-2 py-3 mx-auto my-2">
 
-                       @can('full-access') <div class="col-1"> <input type="checkbox" wire:model.live="selected" value="{{$user->id}}"> </div>@endcan
+                       @can('full-access') <div class="col-1">
+
+                               @foreach($positions as $pos)
+                                   @if($pos->id == $user->position_id)
+                                       @if($pos->access != $pos->max('access'))
+                                        <input type="checkbox" wire:model.live="selected" value="{{$user->id}}">
+                                        @else
+                                        <input type="checkbox" wire:model.live="selected" value="{{$user->id}}" disabled>
+                                       @endif
+                                   @endif
+                               @endforeach
+
+                        </div>@endcan
+
                         <div class="col-1">{{ $loop->iteration }}</div>
                         <div class="col-2">{{$user->name}}</div>
                         <div class="col-3">{{$user->email}}</div>
@@ -132,8 +151,17 @@
                         <div class="col-1"></div>
                         @can('full-access')
                         <div class="col-2 btn-group">
-                            <button class="btn btn-sm w-auto del my-auto" wire:click="delete({{$user->id}})"
-                                    wire:confirm=" آیا از حذف ({{$user->name}}) مطمئن هستید؟">حذف</button>
+
+                            @foreach($positions as $pos)
+                                @if($pos->id == $user->position_id)
+                                    @if($pos->access != $pos->max('access'))
+                                        <button class="btn btn-sm w-auto del my-auto" wire:click="delete({{$user->id}})"
+                                                wire:confirm=" آیا از حذف ({{$user->name}}) مطمئن هستید؟">حذف</button>
+                                    @endif
+                                @endif
+                            @endforeach
+
+
 
                             <button class="btn btn-sm w-auto upd my-auto" wire:click="edit({{$user->id}})">ویرایش</button>
                         </div>

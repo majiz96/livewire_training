@@ -40,6 +40,5 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('full-access', function ($user) {
             return $user->position && $user->position->access == 4;
         });
-
     }
 }
